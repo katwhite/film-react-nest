@@ -5,6 +5,7 @@ export class ScheduleResponseDto {
   rows: number;
   seats: number;
   price: number;
+  taken: string[];
 }
 
 export class FilmResponseDto {
@@ -17,5 +18,5 @@ export class FilmResponseDto {
   title: string;
   about: string;
   description: string;
-  schedule: ScheduleResponseDto[];
+  //   schedule: ScheduleResponseDto[];
 }

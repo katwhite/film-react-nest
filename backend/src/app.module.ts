@@ -22,7 +22,7 @@ console.log('__dirname is:', __dirname);
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MongooseModule.forFeature([{ name: 'Film', schema: FilmSchema }]),
-        ServeStaticModule.forRoot({
+    ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
     }),
   ],

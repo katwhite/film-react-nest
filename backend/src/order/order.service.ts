@@ -6,54 +6,59 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Film } from '../films/schemas/film.schema';
-import { CreateOrderDto } from './dto/order.dto';
+import { CreateOrderDto, TicketDto } from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
   constructor(@InjectModel('Film') private filmModel: Model<Film>) {}
 
-  async createOrder(createOrderDto: CreateOrderDto) {
-    const { filmId, scheduleId, seats } = createOrderDto;
+  async createOrder(order: CreateOrderDto) {
+    const { tickets } = order;
+    const bookedTickets: TicketDto[] = [];
 
-    const film = await this.filmModel.findOne({ id: filmId }).exec();
-    if (!film) {
-      throw new NotFoundException(`Film with id ${filmId} not found`);
-    }
+    for (const ticket of tickets) {
+      const film = await this.filmModel.findOne({ id: ticket.film }).exec();
+      if (!film) {
+        throw new NotFoundException(`Film with id ${ticket.film} not found`);
+      }
 
-    const schedule = film.schedule.find((s) => s.id === scheduleId);
-    if (!schedule) {
-      throw new NotFoundException(`Schedule with id ${scheduleId} not found`);
-    }
+      const schedule = film.schedule.find((s) => s.id === ticket.session);
+      if (!schedule) {
+        throw new NotFoundException(
+          `Schedule with id ${ticket.session} not found`,
+        );
+      }
 
-    const alreadyTaken = seats.filter((seat) => schedule.taken.includes(seat));
-    if (alreadyTaken.length > 0) {
-      throw new ConflictException(
-        `Seats ${alreadyTaken.join(', ')} are already taken`,
-      );
-    }
+      const seatKey = `${ticket.row}:${ticket.seat}`;
+      if (schedule.taken.includes(seatKey)) {
+        throw new ConflictException(`Seat ${seatKey} is already taken`);
+      }
 
-    const updatedTaken = [...schedule.taken, ...seats];
+      const updatedTaken = [...schedule.taken, seatKey];
+      const updateResult = await this.filmModel
+        .updateOne(
+          { id: ticket.film, 'schedule.id': ticket.session },
+          { $set: { 'schedule.$.taken': updatedTaken } },
+        )
+        .exec();
 
-    const updatedFilm = await this.filmModel
-      .findOneAndUpdate(
-        { id: filmId, 'schedule.id': scheduleId },
-        { $set: { 'schedule.$.taken': updatedTaken } },
-        { new: true },
-      )
-      .exec();
+      if (updateResult.modifiedCount === 0) {
+        throw new NotFoundException('Could not update the schedule');
+      }
 
-    if (!updatedFilm) {
-      throw new NotFoundException('Could not update the schedule');
+      bookedTickets.push({
+        film: ticket.film,
+        session: ticket.session,
+        daytime: ticket.daytime,
+        row: ticket.row,
+        seat: ticket.seat,
+        price: ticket.price,
+      });
     }
 
     return {
-      message: 'Order created successfully',
-      order: {
-        filmId,
-        scheduleId,
-        seats,
-        totalPrice: seats.length * schedule.price,
-      },
+      total: bookedTickets.length,
+      items: bookedTickets,
     };
   }
 }
