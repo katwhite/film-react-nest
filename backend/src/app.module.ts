@@ -22,9 +22,8 @@ console.log('__dirname is:', __dirname);
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
     MongooseModule.forFeature([{ name: 'Film', schema: FilmSchema }]),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/content/',
+        ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
     }),
   ],
   controllers: [FilmsController, OrderController],
