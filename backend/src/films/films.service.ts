@@ -35,6 +35,12 @@ export class FilmsService {
     }
     delete film._id;
     delete film.__v;
-    return film;
-  }
+    // return film; -- чтобы просто вернуть объект с полями фильма и массивом сеансов, как ожидает фронт
+    const { schedule, ...filmWithoutSchedule } = film;
+    return {
+      ...filmWithoutSchedule,
+      total: schedule.length,
+      items: schedule,
+    };
+  } // -- чтобы не падали тесты
 }
