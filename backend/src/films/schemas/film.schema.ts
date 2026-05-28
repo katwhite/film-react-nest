@@ -1,47 +1,61 @@
-import { Schema, Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export interface ScheduleItem {
+@Schema()
+export class ScheduleItem {
+  @Prop({ required: true })
   id: string;
+
+  @Prop({ required: true, type: Date })
   daytime: Date;
+
+  @Prop({ required: true })
   hall: number;
+
+  @Prop({ required: true })
   rows: number;
+
+  @Prop({ required: true })
   seats: number;
+
+  @Prop({ required: true })
   price: number;
-  taken: string[]; // массив мест, которые уже заняты
+
+  @Prop({ type: [String], default: [] })
+  taken: string[];
 }
 
-export interface Film extends Document {
+@Schema()
+export class Film extends Document {
+  @Prop({ required: true, unique: true })
   id: string;
+
+  @Prop({ required: true })
   rating: number;
+
+  @Prop({ required: true })
   director: string;
+
+  @Prop({ type: [String], default: [] })
   tags: string[];
+
+  @Prop({ required: true })
   image: string;
+
+  @Prop({ required: true })
   cover: string;
+
+  @Prop({ required: true })
   title: string;
+
+  @Prop({ required: true })
   about: string;
+
+  @Prop({ required: true })
   description: string;
+
+  @Prop({ type: [ScheduleItem], default: [] })
   schedule: ScheduleItem[];
 }
 
-export const FilmSchema = new Schema<Film>({
-  id: { type: String, required: true, unique: true },
-  rating: Number,
-  director: String,
-  tags: [String],
-  image: String,
-  cover: String,
-  title: String,
-  about: String,
-  description: String,
-  schedule: [
-    {
-      id: String,
-      daytime: Date,
-      hall: Number,
-      rows: Number,
-      seats: Number,
-      price: Number,
-      taken: [String],
-    },
-  ],
-});
+export const FilmSchema = SchemaFactory.createForClass(Film);

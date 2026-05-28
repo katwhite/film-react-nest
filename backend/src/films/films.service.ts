@@ -14,7 +14,7 @@ export class FilmsService {
     return { total: items.length, items };
   }
 
-  private toFilmDTO(film: any): FilmResponseDto {
+  private toFilmDTO(film: Film): FilmResponseDto {
     return {
       id: film.id,
       rating: film.rating,
@@ -33,15 +33,8 @@ export class FilmsService {
     if (!film) {
       throw new NotFoundException('Film not found');
     }
-    const items = film.schedule.map((s) => ({
-      id: s.id,
-      daytime: s.daytime,
-      hall: s.hall,
-      rows: s.rows,
-      seats: s.seats,
-      price: s.price,
-      taken: s.taken,
-    }));
-    return { total: items.length, items };
+    delete film._id;
+    delete film.__v;
+    return film;
   }
 }
