@@ -3,14 +3,12 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Film } from '../films/schemas/film.schema';
 import { CreateOrderDto, TicketDto } from './dto/order.dto';
+import { ScheduleRepository } from './schedule.repository';
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel('Film') private filmModel: Model<Film>) {}
+  constructor(private readonly scheduleRepository: ScheduleRepository) {}
 
   async createOrder(order: CreateOrderDto) {
     const { tickets } = order;
@@ -19,29 +17,19 @@ export class OrderService {
     for (const ticket of tickets) {
       const seatKey = `${ticket.row}:${ticket.seat}`;
 
-      const result = await this.filmModel
-        .updateOne(
-          {
-            id: ticket.film,
-            'schedule.id': ticket.session,
-            'schedule.taken': { $ne: seatKey },
-          },
-          {
-            $addToSet: { 'schedule.$.taken': seatKey },
-          },
-        )
-        .exec();
+      const exists = await this.scheduleRepository.existsByFilmAndSchedule(
+        ticket.film,
+        ticket.session,
+      );
+      if (!exists) {
+        throw new NotFoundException(`Film or schedule not found`);
+      }
 
-      if (result.modifiedCount === 0) {
-        const exists = await this.filmModel
-          .exists({
-            id: ticket.film,
-            'schedule.id': ticket.session,
-          })
-          .exec();
-        if (!exists) {
-          throw new NotFoundException(`Film or schedule not found`);
-        }
+      const success = await this.scheduleRepository.bookSeat(
+        ticket.session,
+        seatKey,
+      );
+      if (!success) {
         throw new ConflictException(`Seat ${seatKey} is already taken`);
       }
 
