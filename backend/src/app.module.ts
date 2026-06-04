@@ -27,7 +27,7 @@ console.log('__dirname is:', __dirname);
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: process.env.NODE_ENV !== 'production',
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),

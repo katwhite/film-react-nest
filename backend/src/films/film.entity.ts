@@ -1,9 +1,9 @@
-import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Schedule } from './schedule.entity';
 
-@Entity()
+@Entity('films')
 export class Film {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('float')
@@ -12,7 +12,7 @@ export class Film {
   @Column()
   director: string;
 
-  @Column('text', { array: true, default: [] })
+  @Column('simple-array')
   tags: string[];
 
   @Column()

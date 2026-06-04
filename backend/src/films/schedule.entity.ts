@@ -1,9 +1,9 @@
-import { Entity, Column, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Film } from './film.entity';
 
-@Entity()
+@Entity('schedules')
 export class Schedule {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('timestamptz')
@@ -21,7 +21,7 @@ export class Schedule {
   @Column('int')
   price: number;
 
-  @Column('text', { array: true, default: [] })
+  @Column('simple-array')
   taken: string[];
 
   @ManyToOne(() => Film, (film) => film.schedule)

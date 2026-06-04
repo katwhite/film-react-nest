@@ -11,17 +11,12 @@ export class ScheduleRepository {
   ) {}
 
   async bookSeat(scheduleId: string, seatKey: string): Promise<boolean> {
-    const result = await this.scheduleRepository
-      .createQueryBuilder()
-      .update(Schedule)
-      .set({
-        taken: () => `array_append(taken, '${seatKey}')`,
-      })
-      .where('id = :id', { id: scheduleId })
-      .andWhere('NOT (:seatKey = ANY(taken))', { seatKey })
-      .execute();
-
-    return result.affected === 1;
+    const schedule = await this.scheduleRepository.findOne({ where: { id: scheduleId } });
+  if (!schedule) return false;
+  if (schedule.taken.includes(seatKey)) return false;
+  schedule.taken.push(seatKey);
+  await this.scheduleRepository.save(schedule);
+  return true;
   }
 
   async existsById(id: string): Promise<boolean> {
