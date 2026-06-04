@@ -11,12 +11,14 @@ export class ScheduleRepository {
   ) {}
 
   async bookSeat(scheduleId: string, seatKey: string): Promise<boolean> {
-    const schedule = await this.scheduleRepository.findOne({ where: { id: scheduleId } });
-  if (!schedule) return false;
-  if (schedule.taken.includes(seatKey)) return false;
-  schedule.taken.push(seatKey);
-  await this.scheduleRepository.save(schedule);
-  return true;
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+    });
+    if (!schedule) return false;
+    if (schedule.taken.includes(seatKey)) return false;
+    schedule.taken.push(seatKey);
+    await this.scheduleRepository.save(schedule);
+    return true;
   }
 
   async existsById(id: string): Promise<boolean> {

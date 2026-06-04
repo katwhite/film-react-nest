@@ -34,8 +34,7 @@ export class FilmsService {
       throw new NotFoundException('Film not found');
     }
     // return film; -- чтобы просто вернуть объект с полями фильма и массивом сеансов, как ожидает фронт
-    const schedule = film.schedule ?? [];
-    const { schedule: _, ...filmWithoutSchedule } = film;
+    const { schedule = [], ...filmWithoutSchedule } = film;
     return {
       ...filmWithoutSchedule,
       total: schedule.length,

@@ -16,6 +16,9 @@ export class FilmsRepository implements IFilmsRepository {
   }
 
   async findOne(id: string): Promise<Film | null> {
-    return this.filmsRepository.findOne({ where: { id }, relations: ['schedule'], });
+    return this.filmsRepository.findOne({
+      where: { id },
+      relations: ['schedule'],
+    });
   }
 }
