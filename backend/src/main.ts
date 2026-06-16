@@ -25,6 +25,6 @@ async function bootstrap() {
       break;
   }
   app.useLogger(logger);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
