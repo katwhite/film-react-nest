@@ -1,5 +1,9 @@
 # FILM!
 
+## Проект доступен по адресу:
+
+[http://film-katwhite.nomorepartiessite.ru/](http://film-katwhite.nomorepartiessite.ru/)
+
 ## Установка
 
 ### MongoDB
