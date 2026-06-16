@@ -4,7 +4,6 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/order.dto';
 import { randomUUID as uuid } from 'crypto';
 
-
 describe('OrderController', () => {
   let controller: OrderController;
   let orderService: OrderService;
@@ -24,7 +23,8 @@ describe('OrderController', () => {
             },
           ]),
         ),
-      }).compile();
+      })
+      .compile();
 
     controller = module.get<OrderController>(OrderController);
     orderService = module.get<OrderService>(OrderService);
@@ -32,7 +32,7 @@ describe('OrderController', () => {
 
   it('should call createOrder with correct DTO', async () => {
     const dto: CreateOrderDto = {
-        email: 'email@mail.com',
+      email: 'email@mail.com',
       phone: '+79999999999',
       tickets: [
         {

@@ -1,4 +1,4 @@
-import { JsonLogger } from "./json.logger";
+import { JsonLogger } from './json.logger';
 
 describe('JsonLogger', () => {
   let logger: JsonLogger;
@@ -13,7 +13,12 @@ describe('JsonLogger', () => {
 
   describe('formatMessage', () => {
     it('should return a JSON string with level, message, timestamp and optional context', () => {
-      const result = logger.formatMessage('info', 'message', 'context1', 'context2');
+      const result = logger.formatMessage(
+        'info',
+        'message',
+        'context1',
+        'context2',
+      );
       const parsed = JSON.parse(result);
       expect(parsed).toMatchObject({
         level: 'info',
@@ -37,7 +42,10 @@ describe('JsonLogger', () => {
       expect(consoleLogSpy).toHaveBeenCalled();
       const callArg = consoleLogSpy.mock.calls[0][0];
       expect(() => JSON.parse(callArg)).not.toThrow();
-      expect(JSON.parse(callArg)).toMatchObject({ level: 'log', message: 'hello' });
+      expect(JSON.parse(callArg)).toMatchObject({
+        level: 'log',
+        message: 'hello',
+      });
     });
 
     it('error() should call console.error', () => {

@@ -6,7 +6,7 @@ import { JsonLogger } from './loggers/json.logger/json.logger';
 import { DevLogger } from './loggers/dev.logger/dev.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {bufferLogs: true});
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.setGlobalPrefix('api');
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

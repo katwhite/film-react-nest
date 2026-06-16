@@ -1,4 +1,4 @@
-import { TskvLogger } from "./tskv.logger";
+import { TskvLogger } from './tskv.logger';
 
 describe('TSKVLogger', () => {
   let logger: TskvLogger;
