@@ -38,7 +38,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: film-backend
-    image: ghcr.io/katwhite/film-backend:latest
+    image: ghcr.io/katwhite/film-react-nest-backend:latest
     environment:
       DATABASE_DRIVER: postgres
       DATABASE_HOST: postgres
@@ -70,7 +70,7 @@ services:
     depends_on:
       - backend
     container_name: film-frontend-builder
-    image: ghcr.io/katwhite/film-frontend:latest
+    image: ghcr.io/katwhite/film-react-nest-frontend:latest
     volumes:
       - frontend_dist:/dist
     networks:
@@ -82,7 +82,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: film-nginx
-    image: ghcr.io/katwhite/film-nginx:latest
+    image: ghcr.io/katwhite/film-react-nest-nginx:latest
     ports:
       - "80:80"
     volumes:
