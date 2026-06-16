@@ -35,7 +35,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/film-backend:latest
+          tags: ghcr.io/${{ github.repository_owner }}/film-react-nest-backend:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -43,7 +43,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/film-frontend:latest
+          tags: ghcr.io/${{ github.repository_owner }}/film-react-nest-frontend:latest
           build-args: |
             VITE_API_URL=/api/afisha
             VITE_CDN_URL=/content/afisha
@@ -54,4 +54,4 @@ jobs:
           context: ./nginx
           file: ./nginx/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/film-nginx:latest
+          tags: ghcr.io/${{ github.repository_owner }}/film-react-nest-nginx:latest
